@@ -1,0 +1,890 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: package twitter</title>
+<meta charset="utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>twitter</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/usr/local/lib/python2.7/dist-packages/twitter/__init__.py">/usr/local/lib/python2.7/dist-packages/twitter/__init__.py</a></font></td></tr></table>
+    <p><tt>The&nbsp;minimalist&nbsp;yet&nbsp;fully&nbsp;featured&nbsp;<a href="#Twitter">Twitter</a>&nbsp;API&nbsp;and&nbsp;Python&nbsp;toolset.<br>
+&nbsp;<br>
+The&nbsp;<a href="#Twitter">Twitter</a>&nbsp;and&nbsp;<a href="#TwitterStream">TwitterStream</a>&nbsp;classes&nbsp;are&nbsp;the&nbsp;key&nbsp;to&nbsp;building&nbsp;your&nbsp;own<br>
+<a href="#Twitter">Twitter</a>-enabled&nbsp;applications.<br>
+&nbsp;<br>
+&nbsp;<br>
+The&nbsp;<a href="#Twitter">Twitter</a>&nbsp;class<br>
+-----------------<br>
+&nbsp;<br>
+The&nbsp;minimalist&nbsp;yet&nbsp;fully&nbsp;featured&nbsp;<a href="#Twitter">Twitter</a>&nbsp;API&nbsp;class.<br>
+&nbsp;<br>
+Get&nbsp;RESTful&nbsp;data&nbsp;by&nbsp;accessing&nbsp;members&nbsp;of&nbsp;this&nbsp;class.&nbsp;The&nbsp;result<br>
+is&nbsp;decoded&nbsp;python&nbsp;objects&nbsp;(lists&nbsp;and&nbsp;dicts).<br>
+&nbsp;<br>
+The&nbsp;<a href="#Twitter">Twitter</a>&nbsp;API&nbsp;is&nbsp;documented&nbsp;at:<br>
+&nbsp;<br>
+&nbsp;&nbsp;<a href="http://dev.twitter.com/doc">http://dev.twitter.com/doc</a><br>
+&nbsp;<br>
+&nbsp;<br>
+Examples::<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;from&nbsp;twitter&nbsp;import&nbsp;*<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t&nbsp;=&nbsp;<a href="#Twitter">Twitter</a>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auth=<a href="#OAuth">OAuth</a>(token,&nbsp;token_key,&nbsp;con_secret,&nbsp;con_secret_key)))<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Get&nbsp;your&nbsp;"home"&nbsp;timeline<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.statuses.home_timeline()<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Get&nbsp;a&nbsp;particular&nbsp;friend's&nbsp;timeline<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.statuses.user_timeline(screen_name="billybob")<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;to&nbsp;pass&nbsp;in&nbsp;GET/POST&nbsp;parameters,&nbsp;such&nbsp;as&nbsp;`count`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.statuses.home_timeline(count=5)<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;to&nbsp;pass&nbsp;in&nbsp;the&nbsp;GET/POST&nbsp;parameter&nbsp;`id`&nbsp;you&nbsp;need&nbsp;to&nbsp;use&nbsp;`_id`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.statuses.oembed(_id=1234567890)<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Update&nbsp;your&nbsp;status<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.statuses.update(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;status="Using&nbsp;@sixohsix's&nbsp;sweet&nbsp;Python&nbsp;<a href="#Twitter">Twitter</a>&nbsp;Tools.")<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Send&nbsp;a&nbsp;direct&nbsp;message<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.direct_messages.new(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user="billybob",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text="I&nbsp;think&nbsp;yer&nbsp;swell!")<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Get&nbsp;the&nbsp;members&nbsp;of&nbsp;tamtar's&nbsp;list&nbsp;"Things&nbsp;That&nbsp;Are&nbsp;Rad"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t._("tamtar")._("things-that-are-rad").members()<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Note&nbsp;how&nbsp;the&nbsp;magic&nbsp;`_`&nbsp;method&nbsp;can&nbsp;be&nbsp;used&nbsp;to&nbsp;insert&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;into&nbsp;the&nbsp;middle&nbsp;of&nbsp;a&nbsp;call.&nbsp;You&nbsp;can&nbsp;also&nbsp;use&nbsp;replacement:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.user.list.members(user="tamtar",&nbsp;list="things-that-are-rad")<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;An&nbsp;*optional*&nbsp;`_timeout`&nbsp;parameter&nbsp;can&nbsp;also&nbsp;be&nbsp;used&nbsp;for&nbsp;API<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;calls&nbsp;which&nbsp;take&nbsp;much&nbsp;more&nbsp;time&nbsp;than&nbsp;normal&nbsp;or&nbsp;twitter&nbsp;stops<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;responding&nbsp;for&nbsp;some&nbsp;reason:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.users.lookup(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;screen_name=','.join(A_LIST_OF_100_SCREEN_NAMES),&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_timeout=1)<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Overriding&nbsp;Method:&nbsp;GET/POST<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;you&nbsp;should&nbsp;not&nbsp;need&nbsp;to&nbsp;use&nbsp;this&nbsp;method&nbsp;as&nbsp;this&nbsp;library&nbsp;properly<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;detects&nbsp;whether&nbsp;GET&nbsp;or&nbsp;POST&nbsp;should&nbsp;be&nbsp;used,&nbsp;Nevertheless<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;to&nbsp;force&nbsp;a&nbsp;particular&nbsp;method,&nbsp;use&nbsp;`_method`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.statuses.oembed(_id=1234567890,&nbsp;_method='GET')<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Send&nbsp;a&nbsp;tweet&nbsp;with&nbsp;an&nbsp;image&nbsp;included&nbsp;(or&nbsp;set&nbsp;your&nbsp;banner&nbsp;or&nbsp;logo&nbsp;similarily)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;by&nbsp;just&nbsp;reading&nbsp;your&nbsp;image&nbsp;from&nbsp;the&nbsp;web&nbsp;or&nbsp;a&nbsp;file&nbsp;in&nbsp;a&nbsp;string:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;with&nbsp;open("example.png",&nbsp;"rb")&nbsp;as&nbsp;imagefile:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;params&nbsp;=&nbsp;{"media[]":&nbsp;imagefile.read(),&nbsp;"status":&nbsp;"PTT"}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.statuses.update_with_media(**params)<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Or&nbsp;by&nbsp;sending&nbsp;a&nbsp;base64&nbsp;encoded&nbsp;image:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;params&nbsp;=&nbsp;{"media[]":&nbsp;base64_image,&nbsp;"status":&nbsp;"PTT",&nbsp;"_base64":&nbsp;True}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.statuses.update_with_media(**params)<br>
+&nbsp;<br>
+&nbsp;<br>
+Searching&nbsp;<a href="#Twitter">Twitter</a>::<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Search&nbsp;for&nbsp;the&nbsp;latest&nbsp;tweets&nbsp;about&nbsp;#pycon<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.search.tweets(q="#pycon")<br>
+&nbsp;<br>
+&nbsp;<br>
+Using&nbsp;the&nbsp;data&nbsp;returned<br>
+-----------------------<br>
+&nbsp;<br>
+<a href="#Twitter">Twitter</a>&nbsp;API&nbsp;calls&nbsp;return&nbsp;decoded&nbsp;JSON.&nbsp;This&nbsp;is&nbsp;converted&nbsp;into<br>
+a&nbsp;bunch&nbsp;of&nbsp;Python&nbsp;lists,&nbsp;dicts,&nbsp;ints,&nbsp;and&nbsp;strings.&nbsp;For&nbsp;example::<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;=&nbsp;twitter.statuses.home_timeline()<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;The&nbsp;first&nbsp;'tweet'&nbsp;in&nbsp;the&nbsp;timeline<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x[0]<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;The&nbsp;screen&nbsp;name&nbsp;of&nbsp;the&nbsp;user&nbsp;who&nbsp;wrote&nbsp;the&nbsp;first&nbsp;'tweet'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x[0]['user']['screen_name']<br>
+&nbsp;<br>
+&nbsp;<br>
+Getting&nbsp;raw&nbsp;XML&nbsp;data<br>
+--------------------<br>
+&nbsp;<br>
+If&nbsp;you&nbsp;prefer&nbsp;to&nbsp;get&nbsp;your&nbsp;<a href="#Twitter">Twitter</a>&nbsp;data&nbsp;in&nbsp;XML&nbsp;format,&nbsp;pass<br>
+format="xml"&nbsp;to&nbsp;the&nbsp;<a href="#Twitter">Twitter</a>&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;when&nbsp;you&nbsp;instantiate&nbsp;it::<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;twitter&nbsp;=&nbsp;<a href="#Twitter">Twitter</a>(format="xml")<br>
+&nbsp;<br>
+The&nbsp;output&nbsp;will&nbsp;not&nbsp;be&nbsp;parsed&nbsp;in&nbsp;any&nbsp;way.&nbsp;It&nbsp;will&nbsp;be&nbsp;a&nbsp;raw&nbsp;string<br>
+of&nbsp;XML.<br>
+&nbsp;<br>
+&nbsp;<br>
+The&nbsp;<a href="#TwitterStream">TwitterStream</a>&nbsp;class<br>
+-----------------------<br>
+&nbsp;<br>
+The&nbsp;<a href="#TwitterStream">TwitterStream</a>&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;an&nbsp;interface&nbsp;to&nbsp;the&nbsp;<a href="#Twitter">Twitter</a>&nbsp;Stream<br>
+API.&nbsp;This&nbsp;can&nbsp;be&nbsp;used&nbsp;pretty&nbsp;much&nbsp;the&nbsp;same&nbsp;as&nbsp;the&nbsp;<a href="#Twitter">Twitter</a>&nbsp;class<br>
+except&nbsp;the&nbsp;result&nbsp;of&nbsp;calling&nbsp;a&nbsp;method&nbsp;will&nbsp;be&nbsp;an&nbsp;iterator&nbsp;that<br>
+yields&nbsp;objects&nbsp;decoded&nbsp;from&nbsp;the&nbsp;stream.&nbsp;For&nbsp;example::<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;twitter_stream&nbsp;=&nbsp;<a href="#TwitterStream">TwitterStream</a>(auth=<a href="#OAuth">OAuth</a>(...))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;iterator&nbsp;=&nbsp;twitter_stream.statuses.sample()<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;tweet&nbsp;in&nbsp;iterator:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...do&nbsp;something&nbsp;with&nbsp;this&nbsp;tweet...<br>
+&nbsp;<br>
+Per&nbsp;default&nbsp;the&nbsp;``<a href="#TwitterStream">TwitterStream</a>``&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;uses<br>
+[public&nbsp;streams](https://dev.twitter.com/docs/streaming-apis/streams/public).<br>
+If&nbsp;you&nbsp;want&nbsp;to&nbsp;use&nbsp;one&nbsp;of&nbsp;the&nbsp;other<br>
+[streaming&nbsp;APIs](https://dev.twitter.com/docs/streaming-apis),&nbsp;specify&nbsp;the&nbsp;URL<br>
+manually:<br>
+&nbsp;<br>
+-&nbsp;[Public&nbsp;streams](https://dev.twitter.com/docs/streaming-apis/streams/public):&nbsp;stream.twitter.com<br>
+-&nbsp;[User&nbsp;streams](https://dev.twitter.com/docs/streaming-apis/streams/user):&nbsp;userstream.twitter.com<br>
+-&nbsp;[Site&nbsp;streams](https://dev.twitter.com/docs/streaming-apis/streams/site):&nbsp;sitestream.twitter.com<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;you&nbsp;require&nbsp;the&nbsp;proper<br>
+[permissions](https://dev.twitter.com/docs/application-permission-model)&nbsp;to<br>
+access&nbsp;these&nbsp;streams.&nbsp;E.g.&nbsp;for&nbsp;direct&nbsp;messages&nbsp;your<br>
+[application](https://dev.twitter.com/apps)&nbsp;needs&nbsp;the&nbsp;"Read,&nbsp;Write&nbsp;&amp;&nbsp;Direct<br>
+Messages"&nbsp;permission.<br>
+&nbsp;<br>
+The&nbsp;following&nbsp;example&nbsp;demonstrates&nbsp;how&nbsp;to&nbsp;retrieve&nbsp;all&nbsp;new&nbsp;direct&nbsp;messages<br>
+from&nbsp;the&nbsp;user&nbsp;stream::<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;auth&nbsp;=&nbsp;<a href="#OAuth">OAuth</a>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;consumer_key='[your&nbsp;consumer&nbsp;key]',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;consumer_secret='[your&nbsp;consumer&nbsp;secret]',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;token='[your&nbsp;token]',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;token_secret='[your&nbsp;token&nbsp;secret]'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;twitter_userstream&nbsp;=&nbsp;<a href="#TwitterStream">TwitterStream</a>(auth=auth,&nbsp;domain='userstream.twitter.com')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;msg&nbsp;in&nbsp;twitter_userstream.user():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;'direct_message'&nbsp;in&nbsp;msg:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;msg['direct_message']['text']<br>
+&nbsp;<br>
+The&nbsp;iterator&nbsp;will&nbsp;yield&nbsp;until&nbsp;the&nbsp;TCP&nbsp;connection&nbsp;breaks.&nbsp;When&nbsp;the<br>
+connection&nbsp;breaks,&nbsp;the&nbsp;iterator&nbsp;yields&nbsp;`{'hangup':&nbsp;True}`,&nbsp;and<br>
+raises&nbsp;`StopIteration`&nbsp;if&nbsp;iterated&nbsp;again.<br>
+&nbsp;<br>
+Similarly,&nbsp;if&nbsp;the&nbsp;stream&nbsp;does&nbsp;not&nbsp;produce&nbsp;heartbeats&nbsp;for&nbsp;more&nbsp;than<br>
+90&nbsp;seconds,&nbsp;the&nbsp;iterator&nbsp;yields&nbsp;`{'hangup':&nbsp;True,<br>
+'heartbeat_timeout':&nbsp;True}`,&nbsp;and&nbsp;raises&nbsp;`StopIteration`&nbsp;if<br>
+iterated&nbsp;again.<br>
+&nbsp;<br>
+The&nbsp;`timeout`&nbsp;parameter&nbsp;controls&nbsp;the&nbsp;maximum&nbsp;time&nbsp;between<br>
+yields.&nbsp;If&nbsp;it&nbsp;is&nbsp;nonzero,&nbsp;then&nbsp;the&nbsp;iterator&nbsp;will&nbsp;yield&nbsp;either<br>
+stream&nbsp;data&nbsp;or&nbsp;`{'timeout':&nbsp;True}`&nbsp;within&nbsp;the&nbsp;timeout&nbsp;period.&nbsp;This<br>
+is&nbsp;useful&nbsp;if&nbsp;you&nbsp;want&nbsp;your&nbsp;program&nbsp;to&nbsp;do&nbsp;other&nbsp;stuff&nbsp;in&nbsp;between<br>
+waiting&nbsp;for&nbsp;tweets.<br>
+&nbsp;<br>
+The&nbsp;`block`&nbsp;parameter&nbsp;sets&nbsp;the&nbsp;stream&nbsp;to&nbsp;be&nbsp;fully&nbsp;non-blocking.&nbsp;In<br>
+this&nbsp;mode,&nbsp;the&nbsp;iterator&nbsp;always&nbsp;yields&nbsp;immediately.&nbsp;It&nbsp;returns<br>
+stream&nbsp;data,&nbsp;or&nbsp;`None`.&nbsp;Note&nbsp;that&nbsp;`timeout`&nbsp;supercedes&nbsp;this<br>
+argument,&nbsp;so&nbsp;it&nbsp;should&nbsp;also&nbsp;be&nbsp;set&nbsp;`None`&nbsp;to&nbsp;use&nbsp;this&nbsp;mode.<br>
+&nbsp;<br>
+<a href="#Twitter">Twitter</a>&nbsp;Response&nbsp;Objects<br>
+------------------------<br>
+&nbsp;<br>
+Response&nbsp;from&nbsp;a&nbsp;twitter&nbsp;request.&nbsp;Behaves&nbsp;like&nbsp;a&nbsp;list&nbsp;or&nbsp;a&nbsp;string<br>
+(depending&nbsp;on&nbsp;requested&nbsp;format)&nbsp;but&nbsp;it&nbsp;has&nbsp;a&nbsp;few&nbsp;other&nbsp;interesting<br>
+attributes.<br>
+&nbsp;<br>
+`headers`&nbsp;gives&nbsp;you&nbsp;access&nbsp;to&nbsp;the&nbsp;response&nbsp;headers&nbsp;as&nbsp;an<br>
+httplib.HTTPHeaders&nbsp;instance.&nbsp;You&nbsp;can&nbsp;do<br>
+`response.headers.get('h')`&nbsp;to&nbsp;retrieve&nbsp;a&nbsp;header.<br>
+&nbsp;<br>
+Authentication<br>
+--------------<br>
+&nbsp;<br>
+You&nbsp;can&nbsp;authenticate&nbsp;with&nbsp;<a href="#Twitter">Twitter</a>&nbsp;in&nbsp;three&nbsp;ways:&nbsp;<a href="#NoAuth">NoAuth</a>,&nbsp;<a href="#OAuth">OAuth</a>,&nbsp;or<br>
+<a href="#OAuth2">OAuth2</a>&nbsp;(app-only).&nbsp;Get&nbsp;help()&nbsp;on&nbsp;these&nbsp;classes&nbsp;to&nbsp;learn&nbsp;how&nbsp;to&nbsp;use&nbsp;them.<br>
+&nbsp;<br>
+<a href="#OAuth">OAuth</a>&nbsp;and&nbsp;<a href="#OAuth2">OAuth2</a>&nbsp;are&nbsp;probably&nbsp;the&nbsp;most&nbsp;useful.<br>
+&nbsp;<br>
+&nbsp;<br>
+Working&nbsp;with&nbsp;<a href="#OAuth">OAuth</a><br>
+------------------<br>
+&nbsp;<br>
+Visit&nbsp;the&nbsp;<a href="#Twitter">Twitter</a>&nbsp;developer&nbsp;page&nbsp;and&nbsp;create&nbsp;a&nbsp;new&nbsp;application:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;https://dev.twitter.com/apps/new<br>
+&nbsp;<br>
+This&nbsp;will&nbsp;get&nbsp;you&nbsp;a&nbsp;CONSUMER_KEY&nbsp;and&nbsp;CONSUMER_SECRET.<br>
+&nbsp;<br>
+When&nbsp;users&nbsp;run&nbsp;your&nbsp;application&nbsp;they&nbsp;have&nbsp;to&nbsp;authenticate&nbsp;your&nbsp;app<br>
+with&nbsp;their&nbsp;<a href="#Twitter">Twitter</a>&nbsp;account.&nbsp;A&nbsp;few&nbsp;HTTP&nbsp;calls&nbsp;to&nbsp;twitter&nbsp;are&nbsp;required<br>
+to&nbsp;do&nbsp;this.&nbsp;Please&nbsp;see&nbsp;the&nbsp;twitter.oauth_dance&nbsp;module&nbsp;to&nbsp;see&nbsp;how&nbsp;this<br>
+is&nbsp;done.&nbsp;If&nbsp;you&nbsp;are&nbsp;making&nbsp;a&nbsp;command-line&nbsp;app,&nbsp;you&nbsp;can&nbsp;use&nbsp;the<br>
+<a href="#-oauth_dance">oauth_dance</a>()&nbsp;function&nbsp;directly.<br>
+&nbsp;<br>
+Performing&nbsp;the&nbsp;"oauth&nbsp;dance"&nbsp;gets&nbsp;you&nbsp;an&nbsp;ouath&nbsp;token&nbsp;and&nbsp;oauth&nbsp;secret<br>
+that&nbsp;authenticate&nbsp;the&nbsp;user&nbsp;with&nbsp;<a href="#Twitter">Twitter</a>.&nbsp;You&nbsp;should&nbsp;save&nbsp;these&nbsp;for<br>
+later&nbsp;so&nbsp;that&nbsp;the&nbsp;user&nbsp;doesn't&nbsp;have&nbsp;to&nbsp;do&nbsp;the&nbsp;oauth&nbsp;dance&nbsp;again.<br>
+&nbsp;<br>
+read_token_file&nbsp;and&nbsp;write_token_file&nbsp;are&nbsp;utility&nbsp;methods&nbsp;to&nbsp;read&nbsp;and<br>
+write&nbsp;<a href="#OAuth">OAuth</a>&nbsp;token&nbsp;and&nbsp;secret&nbsp;key&nbsp;values.&nbsp;The&nbsp;values&nbsp;are&nbsp;stored&nbsp;as<br>
+strings&nbsp;in&nbsp;the&nbsp;file.&nbsp;Not&nbsp;terribly&nbsp;exciting.<br>
+&nbsp;<br>
+Finally,&nbsp;you&nbsp;can&nbsp;use&nbsp;the&nbsp;<a href="#OAuth">OAuth</a>&nbsp;authenticator&nbsp;to&nbsp;connect&nbsp;to&nbsp;<a href="#Twitter">Twitter</a>.&nbsp;In<br>
+code&nbsp;it&nbsp;all&nbsp;goes&nbsp;like&nbsp;this::<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;from&nbsp;twitter&nbsp;import&nbsp;*<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;MY_TWITTER_CREDS&nbsp;=&nbsp;os.path.expanduser('~/.my_app_credentials')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;os.path.exists(MY_TWITTER_CREDS):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#-oauth_dance">oauth_dance</a>("My&nbsp;App&nbsp;Name",&nbsp;CONSUMER_KEY,&nbsp;CONSUMER_SECRET,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MY_TWITTER_CREDS)<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;oauth_token,&nbsp;oauth_secret&nbsp;=&nbsp;<a href="#-read_token_file">read_token_file</a>(MY_TWITTER_CREDS)<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;twitter&nbsp;=&nbsp;<a href="#Twitter">Twitter</a>(auth=<a href="#OAuth">OAuth</a>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;oauth_token,&nbsp;oauth_token_secret,&nbsp;CONSUMER_KEY,&nbsp;CONSUMER_SECRET))<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Now&nbsp;work&nbsp;with&nbsp;<a href="#Twitter">Twitter</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;twitter.statuses.update(status='Hello,&nbsp;world!')<br>
+&nbsp;<br>
+&nbsp;<br>
+Working&nbsp;with&nbsp;<a href="#OAuth2">OAuth2</a><br>
+-------------------<br>
+&nbsp;<br>
+<a href="#Twitter">Twitter</a>&nbsp;only&nbsp;supports&nbsp;the&nbsp;application-only&nbsp;flow&nbsp;of&nbsp;<a href="#OAuth2">OAuth2</a>&nbsp;for&nbsp;certain<br>
+API&nbsp;endpoints.&nbsp;This&nbsp;<a href="#OAuth2">OAuth2</a>&nbsp;authenticator&nbsp;only&nbsp;supports&nbsp;the&nbsp;application-only<br>
+flow&nbsp;right&nbsp;now.<br>
+&nbsp;<br>
+To&nbsp;authenticate&nbsp;with&nbsp;<a href="#OAuth2">OAuth2</a>,&nbsp;visit&nbsp;the&nbsp;<a href="#Twitter">Twitter</a>&nbsp;developer&nbsp;page&nbsp;and&nbsp;create&nbsp;a&nbsp;new<br>
+application:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;https://dev.twitter.com/apps/new<br>
+&nbsp;<br>
+This&nbsp;will&nbsp;get&nbsp;you&nbsp;a&nbsp;CONSUMER_KEY&nbsp;and&nbsp;CONSUMER_SECRET.<br>
+&nbsp;<br>
+Exchange&nbsp;your&nbsp;CONSUMER_KEY&nbsp;and&nbsp;CONSUMER_SECRET&nbsp;for&nbsp;a&nbsp;bearer&nbsp;token&nbsp;using&nbsp;the<br>
+oauth2_dance&nbsp;function.<br>
+&nbsp;<br>
+Finally,&nbsp;you&nbsp;can&nbsp;use&nbsp;the&nbsp;<a href="#OAuth2">OAuth2</a>&nbsp;authenticator&nbsp;and&nbsp;your&nbsp;bearer&nbsp;token&nbsp;to&nbsp;connect<br>
+to&nbsp;<a href="#Twitter">Twitter</a>.&nbsp;In&nbsp;code&nbsp;it&nbsp;goes&nbsp;like&nbsp;this::<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;twitter&nbsp;=&nbsp;<a href="#Twitter">Twitter</a>(auth=<a href="#OAuth2">OAuth2</a>(bearer_token=BEARER_TOKEN))<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Now&nbsp;work&nbsp;with&nbsp;<a href="#Twitter">Twitter</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;twitter.search.tweets(q='keyword')</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Package Contents</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="twitter.ansi.html">ansi</a><br>
+<a href="twitter.api.html">api</a><br>
+<a href="twitter.archiver.html">archiver</a><br>
+<a href="twitter.auth.html">auth</a><br>
+<a href="twitter.cmdline.html">cmdline</a><br>
+</td><td width="25%" valign=top><a href="twitter.corrupt.html">corrupt</a><br>
+<a href="twitter.follow.html">follow</a><br>
+<a href="twitter.ircbot.html">ircbot</a><br>
+<a href="twitter.logger.html">logger</a><br>
+<a href="twitter.oauth.html">oauth</a><br>
+</td><td width="25%" valign=top><a href="twitter.oauth2.html">oauth2</a><br>
+<a href="twitter.oauth_dance.html">oauth_dance</a><br>
+<a href="twitter.stream.html">stream</a><br>
+<a href="twitter.stream_example.html">stream_example</a><br>
+<a href="twitter.timezones.html">timezones</a><br>
+</td><td width="25%" valign=top><a href="twitter.twitter_globals.html">twitter_globals</a><br>
+<a href="twitter.util.html">util</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="__builtin__.html#object">__builtin__.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="twitter.api.html#TwitterResponse">twitter.api.TwitterResponse</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="exceptions.html#Exception">exceptions.Exception</a>(<a href="exceptions.html#BaseException">exceptions.BaseException</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="twitter.api.html#TwitterError">twitter.api.TwitterError</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="twitter.api.html#TwitterHTTPError">twitter.api.TwitterHTTPError</a>
+</font></dt></dl>
+</dd>
+</dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="twitter.api.html#TwitterCall">twitter.api.TwitterCall</a>(<a href="__builtin__.html#object">__builtin__.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="twitter.api.html#Twitter">twitter.api.Twitter</a>
+</font></dt><dt><font face="helvetica, arial"><a href="twitter.stream.html#TwitterStream">twitter.stream.TwitterStream</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="twitter.auth.html#Auth">twitter.auth.Auth</a>(<a href="__builtin__.html#object">__builtin__.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="twitter.auth.html#NoAuth">twitter.auth.NoAuth</a>
+</font></dt><dt><font face="helvetica, arial"><a href="twitter.auth.html#UserPassAuth">twitter.auth.UserPassAuth</a>
+</font></dt><dt><font face="helvetica, arial"><a href="twitter.oauth.html#OAuth">twitter.oauth.OAuth</a>
+</font></dt><dt><font face="helvetica, arial"><a href="twitter.oauth2.html#OAuth2">twitter.oauth2.OAuth2</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="NoAuth">class <strong>NoAuth</strong></a>(<a href="twitter.auth.html#Auth">Auth</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>No&nbsp;authentication&nbsp;authenticator.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="twitter.auth.html#NoAuth">NoAuth</a></dd>
+<dd><a href="twitter.auth.html#Auth">Auth</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="NoAuth-__init__"><strong>__init__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="NoAuth-encode_params"><strong>encode_params</strong></a>(self, base_url, method, params)</dt></dl>
+
+<dl><dt><a name="NoAuth-generate_headers"><strong>generate_headers</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="twitter.auth.html#Auth">Auth</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="OAuth">class <strong>OAuth</strong></a>(<a href="twitter.auth.html#Auth">twitter.auth.Auth</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>An&nbsp;<a href="#OAuth">OAuth</a>&nbsp;authenticator.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="twitter.oauth.html#OAuth">OAuth</a></dd>
+<dd><a href="twitter.auth.html#Auth">twitter.auth.Auth</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="OAuth-__init__"><strong>__init__</strong></a>(self, token, token_secret, consumer_key, consumer_secret)</dt><dd><tt>Create&nbsp;the&nbsp;authenticator.&nbsp;If&nbsp;you&nbsp;are&nbsp;in&nbsp;the&nbsp;initial&nbsp;stages&nbsp;of<br>
+the&nbsp;<a href="#OAuth">OAuth</a>&nbsp;dance&nbsp;and&nbsp;don't&nbsp;yet&nbsp;have&nbsp;a&nbsp;token&nbsp;or&nbsp;token_secret,<br>
+pass&nbsp;empty&nbsp;strings&nbsp;for&nbsp;these&nbsp;params.</tt></dd></dl>
+
+<dl><dt><a name="OAuth-encode_params"><strong>encode_params</strong></a>(self, base_url, method, params)</dt></dl>
+
+<dl><dt><a name="OAuth-generate_headers"><strong>generate_headers</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="twitter.auth.html#Auth">twitter.auth.Auth</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="OAuth2">class <strong>OAuth2</strong></a>(<a href="twitter.auth.html#Auth">twitter.auth.Auth</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>An&nbsp;<a href="#OAuth2">OAuth2</a>&nbsp;application-only&nbsp;authenticator.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="twitter.oauth2.html#OAuth2">OAuth2</a></dd>
+<dd><a href="twitter.auth.html#Auth">twitter.auth.Auth</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="OAuth2-__init__"><strong>__init__</strong></a>(self, consumer_key<font color="#909090">=None</font>, consumer_secret<font color="#909090">=None</font>, bearer_token<font color="#909090">=None</font>)</dt><dd><tt>Create&nbsp;an&nbsp;authenticator.&nbsp;You&nbsp;can&nbsp;supply&nbsp;consumer_key&nbsp;and<br>
+consumer_secret&nbsp;if&nbsp;you&nbsp;are&nbsp;requesting&nbsp;a&nbsp;bearer_token.&nbsp;Otherwise<br>
+you&nbsp;must&nbsp;supply&nbsp;the&nbsp;bearer_token.</tt></dd></dl>
+
+<dl><dt><a name="OAuth2-encode_params"><strong>encode_params</strong></a>(self, base_url, method, params)</dt></dl>
+
+<dl><dt><a name="OAuth2-generate_headers"><strong>generate_headers</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="twitter.auth.html#Auth">twitter.auth.Auth</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Twitter">class <strong>Twitter</strong></a>(<a href="twitter.api.html#TwitterCall">TwitterCall</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;minimalist&nbsp;yet&nbsp;fully&nbsp;featured&nbsp;<a href="#Twitter">Twitter</a>&nbsp;API&nbsp;class.<br>
+&nbsp;<br>
+Get&nbsp;RESTful&nbsp;data&nbsp;by&nbsp;accessing&nbsp;members&nbsp;of&nbsp;this&nbsp;class.&nbsp;The&nbsp;result<br>
+is&nbsp;decoded&nbsp;python&nbsp;objects&nbsp;(lists&nbsp;and&nbsp;dicts).<br>
+&nbsp;<br>
+The&nbsp;<a href="#Twitter">Twitter</a>&nbsp;API&nbsp;is&nbsp;documented&nbsp;at:<br>
+&nbsp;<br>
+&nbsp;&nbsp;<a href="http://dev.twitter.com/doc">http://dev.twitter.com/doc</a><br>
+&nbsp;<br>
+&nbsp;<br>
+Examples::<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;from&nbsp;twitter&nbsp;import&nbsp;*<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t&nbsp;=&nbsp;<a href="#Twitter">Twitter</a>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auth=<a href="#OAuth">OAuth</a>(token,&nbsp;token_key,&nbsp;con_secret,&nbsp;con_secret_key)))<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Get&nbsp;your&nbsp;"home"&nbsp;timeline<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.statuses.home_timeline()<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Get&nbsp;a&nbsp;particular&nbsp;friend's&nbsp;timeline<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.statuses.user_timeline(screen_name="billybob")<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;to&nbsp;pass&nbsp;in&nbsp;GET/POST&nbsp;parameters,&nbsp;such&nbsp;as&nbsp;`count`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.statuses.home_timeline(count=5)<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;to&nbsp;pass&nbsp;in&nbsp;the&nbsp;GET/POST&nbsp;parameter&nbsp;`id`&nbsp;you&nbsp;need&nbsp;to&nbsp;use&nbsp;`_id`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.statuses.oembed(_id=1234567890)<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Update&nbsp;your&nbsp;status<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.statuses.update(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;status="Using&nbsp;@sixohsix's&nbsp;sweet&nbsp;Python&nbsp;<a href="#Twitter">Twitter</a>&nbsp;Tools.")<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Send&nbsp;a&nbsp;direct&nbsp;message<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.direct_messages.new(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user="billybob",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text="I&nbsp;think&nbsp;yer&nbsp;swell!")<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Get&nbsp;the&nbsp;members&nbsp;of&nbsp;tamtar's&nbsp;list&nbsp;"Things&nbsp;That&nbsp;Are&nbsp;Rad"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t._("tamtar")._("things-that-are-rad").members()<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Note&nbsp;how&nbsp;the&nbsp;magic&nbsp;`_`&nbsp;method&nbsp;can&nbsp;be&nbsp;used&nbsp;to&nbsp;insert&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;into&nbsp;the&nbsp;middle&nbsp;of&nbsp;a&nbsp;call.&nbsp;You&nbsp;can&nbsp;also&nbsp;use&nbsp;replacement:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.user.list.members(user="tamtar",&nbsp;list="things-that-are-rad")<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;An&nbsp;*optional*&nbsp;`_timeout`&nbsp;parameter&nbsp;can&nbsp;also&nbsp;be&nbsp;used&nbsp;for&nbsp;API<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;calls&nbsp;which&nbsp;take&nbsp;much&nbsp;more&nbsp;time&nbsp;than&nbsp;normal&nbsp;or&nbsp;twitter&nbsp;stops<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;responding&nbsp;for&nbsp;some&nbsp;reason:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.users.lookup(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;screen_name=','.join(A_LIST_OF_100_SCREEN_NAMES),&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_timeout=1)<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Overriding&nbsp;Method:&nbsp;GET/POST<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;you&nbsp;should&nbsp;not&nbsp;need&nbsp;to&nbsp;use&nbsp;this&nbsp;method&nbsp;as&nbsp;this&nbsp;library&nbsp;properly<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;detects&nbsp;whether&nbsp;GET&nbsp;or&nbsp;POST&nbsp;should&nbsp;be&nbsp;used,&nbsp;Nevertheless<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;to&nbsp;force&nbsp;a&nbsp;particular&nbsp;method,&nbsp;use&nbsp;`_method`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.statuses.oembed(_id=1234567890,&nbsp;_method='GET')<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Send&nbsp;a&nbsp;tweet&nbsp;with&nbsp;an&nbsp;image&nbsp;included&nbsp;(or&nbsp;set&nbsp;your&nbsp;banner&nbsp;or&nbsp;logo&nbsp;similarily)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;by&nbsp;just&nbsp;reading&nbsp;your&nbsp;image&nbsp;from&nbsp;the&nbsp;web&nbsp;or&nbsp;a&nbsp;file&nbsp;in&nbsp;a&nbsp;string:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;with&nbsp;open("example.png",&nbsp;"rb")&nbsp;as&nbsp;imagefile:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;params&nbsp;=&nbsp;{"media[]":&nbsp;imagefile.read(),&nbsp;"status":&nbsp;"PTT"}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.statuses.update_with_media(**params)<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Or&nbsp;by&nbsp;sending&nbsp;a&nbsp;base64&nbsp;encoded&nbsp;image:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;params&nbsp;=&nbsp;{"media[]":&nbsp;base64_image,&nbsp;"status":&nbsp;"PTT",&nbsp;"_base64":&nbsp;True}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.statuses.update_with_media(**params)<br>
+&nbsp;<br>
+&nbsp;<br>
+Searching&nbsp;<a href="#Twitter">Twitter</a>::<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Search&nbsp;for&nbsp;the&nbsp;latest&nbsp;tweets&nbsp;about&nbsp;#pycon<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t.search.tweets(q="#pycon")<br>
+&nbsp;<br>
+&nbsp;<br>
+Using&nbsp;the&nbsp;data&nbsp;returned<br>
+-----------------------<br>
+&nbsp;<br>
+<a href="#Twitter">Twitter</a>&nbsp;API&nbsp;calls&nbsp;return&nbsp;decoded&nbsp;JSON.&nbsp;This&nbsp;is&nbsp;converted&nbsp;into<br>
+a&nbsp;bunch&nbsp;of&nbsp;Python&nbsp;lists,&nbsp;dicts,&nbsp;ints,&nbsp;and&nbsp;strings.&nbsp;For&nbsp;example::<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;=&nbsp;twitter.statuses.home_timeline()<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;The&nbsp;first&nbsp;'tweet'&nbsp;in&nbsp;the&nbsp;timeline<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x[0]<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;The&nbsp;screen&nbsp;name&nbsp;of&nbsp;the&nbsp;user&nbsp;who&nbsp;wrote&nbsp;the&nbsp;first&nbsp;'tweet'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x[0]['user']['screen_name']<br>
+&nbsp;<br>
+&nbsp;<br>
+Getting&nbsp;raw&nbsp;XML&nbsp;data<br>
+--------------------<br>
+&nbsp;<br>
+If&nbsp;you&nbsp;prefer&nbsp;to&nbsp;get&nbsp;your&nbsp;<a href="#Twitter">Twitter</a>&nbsp;data&nbsp;in&nbsp;XML&nbsp;format,&nbsp;pass<br>
+format="xml"&nbsp;to&nbsp;the&nbsp;<a href="#Twitter">Twitter</a>&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;when&nbsp;you&nbsp;instantiate&nbsp;it::<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;twitter&nbsp;=&nbsp;<a href="#Twitter">Twitter</a>(format="xml")<br>
+&nbsp;<br>
+The&nbsp;output&nbsp;will&nbsp;not&nbsp;be&nbsp;parsed&nbsp;in&nbsp;any&nbsp;way.&nbsp;It&nbsp;will&nbsp;be&nbsp;a&nbsp;raw&nbsp;string<br>
+of&nbsp;XML.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="twitter.api.html#Twitter">Twitter</a></dd>
+<dd><a href="twitter.api.html#TwitterCall">TwitterCall</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="Twitter-__init__"><strong>__init__</strong></a>(self, format<font color="#909090">=u'json'</font>, domain<font color="#909090">=u'api.twitter.com'</font>, secure<font color="#909090">=True</font>, auth<font color="#909090">=None</font>, api_version<font color="#909090">=&lt;class 'twitter.api._DEFAULT'&gt;</font>)</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;twitter&nbsp;API&nbsp;connector.<br>
+&nbsp;<br>
+Pass&nbsp;an&nbsp;`auth`&nbsp;parameter&nbsp;to&nbsp;use&nbsp;the&nbsp;credentials&nbsp;of&nbsp;a&nbsp;specific<br>
+user.&nbsp;Generally&nbsp;you'll&nbsp;want&nbsp;to&nbsp;pass&nbsp;an&nbsp;`<a href="#OAuth">OAuth</a>`<br>
+instance::<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;twitter&nbsp;=&nbsp;<a href="#Twitter">Twitter</a>(auth=<a href="#OAuth">OAuth</a>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;token,&nbsp;token_secret,&nbsp;consumer_key,&nbsp;consumer_secret))<br>
+&nbsp;<br>
+&nbsp;<br>
+`domain`&nbsp;lets&nbsp;you&nbsp;change&nbsp;the&nbsp;domain&nbsp;you&nbsp;are&nbsp;connecting.&nbsp;By<br>
+default&nbsp;it's&nbsp;`api.twitter.com`.<br>
+&nbsp;<br>
+If&nbsp;`secure`&nbsp;is&nbsp;False&nbsp;you&nbsp;will&nbsp;connect&nbsp;with&nbsp;HTTP&nbsp;instead&nbsp;of<br>
+HTTPS.<br>
+&nbsp;<br>
+`api_version`&nbsp;is&nbsp;used&nbsp;to&nbsp;set&nbsp;the&nbsp;base&nbsp;uri.&nbsp;By&nbsp;default&nbsp;it's<br>
+'1.1'.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="twitter.api.html#TwitterCall">TwitterCall</a>:<br>
+<dl><dt><a name="Twitter-__call__"><strong>__call__</strong></a>(self, **kwargs)</dt></dl>
+
+<dl><dt><a name="Twitter-__getattr__"><strong>__getattr__</strong></a>(self, k)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="twitter.api.html#TwitterCall">TwitterCall</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="TwitterError">class <strong>TwitterError</strong></a>(<a href="exceptions.html#Exception">exceptions.Exception</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Base&nbsp;<a href="exceptions.html#Exception">Exception</a>&nbsp;thrown&nbsp;by&nbsp;the&nbsp;<a href="#Twitter">Twitter</a>&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;when&nbsp;there&nbsp;is&nbsp;a<br>
+general&nbsp;error&nbsp;interacting&nbsp;with&nbsp;the&nbsp;API.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="twitter.api.html#TwitterError">TwitterError</a></dd>
+<dd><a href="exceptions.html#Exception">exceptions.Exception</a></dd>
+<dd><a href="exceptions.html#BaseException">exceptions.BaseException</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="exceptions.html#Exception">exceptions.Exception</a>:<br>
+<dl><dt><a name="TwitterError-__init__"><strong>__init__</strong></a>(...)</dt><dd><tt>x.<a href="#TwitterError-__init__">__init__</a>(...)&nbsp;initializes&nbsp;x;&nbsp;see&nbsp;help(type(x))&nbsp;for&nbsp;signature</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="exceptions.html#Exception">exceptions.Exception</a>:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#TwitterError-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<hr>
+Methods inherited from <a href="exceptions.html#BaseException">exceptions.BaseException</a>:<br>
+<dl><dt><a name="TwitterError-__delattr__"><strong>__delattr__</strong></a>(...)</dt><dd><tt>x.<a href="#TwitterError-__delattr__">__delattr__</a>('name')&nbsp;&lt;==&gt;&nbsp;del&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="TwitterError-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#TwitterError-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="TwitterError-__getitem__"><strong>__getitem__</strong></a>(...)</dt><dd><tt>x.<a href="#TwitterError-__getitem__">__getitem__</a>(y)&nbsp;&lt;==&gt;&nbsp;x[y]</tt></dd></dl>
+
+<dl><dt><a name="TwitterError-__getslice__"><strong>__getslice__</strong></a>(...)</dt><dd><tt>x.<a href="#TwitterError-__getslice__">__getslice__</a>(i,&nbsp;j)&nbsp;&lt;==&gt;&nbsp;x[i:j]<br>
+&nbsp;<br>
+Use&nbsp;of&nbsp;negative&nbsp;indices&nbsp;is&nbsp;not&nbsp;supported.</tt></dd></dl>
+
+<dl><dt><a name="TwitterError-__reduce__"><strong>__reduce__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="TwitterError-__repr__"><strong>__repr__</strong></a>(...)</dt><dd><tt>x.<a href="#TwitterError-__repr__">__repr__</a>()&nbsp;&lt;==&gt;&nbsp;repr(x)</tt></dd></dl>
+
+<dl><dt><a name="TwitterError-__setattr__"><strong>__setattr__</strong></a>(...)</dt><dd><tt>x.<a href="#TwitterError-__setattr__">__setattr__</a>('name',&nbsp;value)&nbsp;&lt;==&gt;&nbsp;x.name&nbsp;=&nbsp;value</tt></dd></dl>
+
+<dl><dt><a name="TwitterError-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="TwitterError-__str__"><strong>__str__</strong></a>(...)</dt><dd><tt>x.<a href="#TwitterError-__str__">__str__</a>()&nbsp;&lt;==&gt;&nbsp;str(x)</tt></dd></dl>
+
+<dl><dt><a name="TwitterError-__unicode__"><strong>__unicode__</strong></a>(...)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="exceptions.html#BaseException">exceptions.BaseException</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>args</strong></dt>
+</dl>
+<dl><dt><strong>message</strong></dt>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="TwitterHTTPError">class <strong>TwitterHTTPError</strong></a>(<a href="twitter.api.html#TwitterError">TwitterError</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="exceptions.html#Exception">Exception</a>&nbsp;thrown&nbsp;by&nbsp;the&nbsp;<a href="#Twitter">Twitter</a>&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;when&nbsp;there&nbsp;is&nbsp;an<br>
+HTTP&nbsp;error&nbsp;interacting&nbsp;with&nbsp;twitter.com.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="twitter.api.html#TwitterHTTPError">TwitterHTTPError</a></dd>
+<dd><a href="twitter.api.html#TwitterError">TwitterError</a></dd>
+<dd><a href="exceptions.html#Exception">exceptions.Exception</a></dd>
+<dd><a href="exceptions.html#BaseException">exceptions.BaseException</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="TwitterHTTPError-__init__"><strong>__init__</strong></a>(self, e, uri, format, uriparts)</dt></dl>
+
+<dl><dt><a name="TwitterHTTPError-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="twitter.api.html#TwitterError">TwitterError</a>:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="exceptions.html#Exception">exceptions.Exception</a>:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#TwitterHTTPError-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<hr>
+Methods inherited from <a href="exceptions.html#BaseException">exceptions.BaseException</a>:<br>
+<dl><dt><a name="TwitterHTTPError-__delattr__"><strong>__delattr__</strong></a>(...)</dt><dd><tt>x.<a href="#TwitterHTTPError-__delattr__">__delattr__</a>('name')&nbsp;&lt;==&gt;&nbsp;del&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="TwitterHTTPError-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#TwitterHTTPError-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="TwitterHTTPError-__getitem__"><strong>__getitem__</strong></a>(...)</dt><dd><tt>x.<a href="#TwitterHTTPError-__getitem__">__getitem__</a>(y)&nbsp;&lt;==&gt;&nbsp;x[y]</tt></dd></dl>
+
+<dl><dt><a name="TwitterHTTPError-__getslice__"><strong>__getslice__</strong></a>(...)</dt><dd><tt>x.<a href="#TwitterHTTPError-__getslice__">__getslice__</a>(i,&nbsp;j)&nbsp;&lt;==&gt;&nbsp;x[i:j]<br>
+&nbsp;<br>
+Use&nbsp;of&nbsp;negative&nbsp;indices&nbsp;is&nbsp;not&nbsp;supported.</tt></dd></dl>
+
+<dl><dt><a name="TwitterHTTPError-__reduce__"><strong>__reduce__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="TwitterHTTPError-__repr__"><strong>__repr__</strong></a>(...)</dt><dd><tt>x.<a href="#TwitterHTTPError-__repr__">__repr__</a>()&nbsp;&lt;==&gt;&nbsp;repr(x)</tt></dd></dl>
+
+<dl><dt><a name="TwitterHTTPError-__setattr__"><strong>__setattr__</strong></a>(...)</dt><dd><tt>x.<a href="#TwitterHTTPError-__setattr__">__setattr__</a>('name',&nbsp;value)&nbsp;&lt;==&gt;&nbsp;x.name&nbsp;=&nbsp;value</tt></dd></dl>
+
+<dl><dt><a name="TwitterHTTPError-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="TwitterHTTPError-__unicode__"><strong>__unicode__</strong></a>(...)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="exceptions.html#BaseException">exceptions.BaseException</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>args</strong></dt>
+</dl>
+<dl><dt><strong>message</strong></dt>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="TwitterResponse">class <strong>TwitterResponse</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Response&nbsp;from&nbsp;a&nbsp;twitter&nbsp;request.&nbsp;Behaves&nbsp;like&nbsp;a&nbsp;list&nbsp;or&nbsp;a&nbsp;string<br>
+(depending&nbsp;on&nbsp;requested&nbsp;format)&nbsp;but&nbsp;it&nbsp;has&nbsp;a&nbsp;few&nbsp;other&nbsp;interesting<br>
+attributes.<br>
+&nbsp;<br>
+`headers`&nbsp;gives&nbsp;you&nbsp;access&nbsp;to&nbsp;the&nbsp;response&nbsp;headers&nbsp;as&nbsp;an<br>
+httplib.HTTPHeaders&nbsp;instance.&nbsp;You&nbsp;can&nbsp;do<br>
+`response.headers.get('h')`&nbsp;to&nbsp;retrieve&nbsp;a&nbsp;header.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>rate_limit_limit</strong></dt>
+<dd><tt>The&nbsp;rate&nbsp;limit&nbsp;ceiling&nbsp;for&nbsp;that&nbsp;given&nbsp;request.</tt></dd>
+</dl>
+<dl><dt><strong>rate_limit_remaining</strong></dt>
+<dd><tt>Remaining&nbsp;requests&nbsp;in&nbsp;the&nbsp;current&nbsp;rate-limit.</tt></dd>
+</dl>
+<dl><dt><strong>rate_limit_reset</strong></dt>
+<dd><tt>Time&nbsp;in&nbsp;UTC&nbsp;epoch&nbsp;seconds&nbsp;when&nbsp;the&nbsp;rate&nbsp;limit&nbsp;will&nbsp;reset.</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="TwitterStream">class <strong>TwitterStream</strong></a>(<a href="twitter.api.html#TwitterCall">twitter.api.TwitterCall</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;<a href="#TwitterStream">TwitterStream</a>&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;an&nbsp;interface&nbsp;to&nbsp;the&nbsp;<a href="#Twitter">Twitter</a>&nbsp;Stream<br>
+API.&nbsp;This&nbsp;can&nbsp;be&nbsp;used&nbsp;pretty&nbsp;much&nbsp;the&nbsp;same&nbsp;as&nbsp;the&nbsp;<a href="#Twitter">Twitter</a>&nbsp;class<br>
+except&nbsp;the&nbsp;result&nbsp;of&nbsp;calling&nbsp;a&nbsp;method&nbsp;will&nbsp;be&nbsp;an&nbsp;iterator&nbsp;that<br>
+yields&nbsp;objects&nbsp;decoded&nbsp;from&nbsp;the&nbsp;stream.&nbsp;For&nbsp;example::<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;twitter_stream&nbsp;=&nbsp;<a href="#TwitterStream">TwitterStream</a>(auth=<a href="#OAuth">OAuth</a>(...))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;iterator&nbsp;=&nbsp;twitter_stream.statuses.sample()<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;tweet&nbsp;in&nbsp;iterator:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...do&nbsp;something&nbsp;with&nbsp;this&nbsp;tweet...<br>
+&nbsp;<br>
+Per&nbsp;default&nbsp;the&nbsp;``<a href="#TwitterStream">TwitterStream</a>``&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;uses<br>
+[public&nbsp;streams](https://dev.twitter.com/docs/streaming-apis/streams/public).<br>
+If&nbsp;you&nbsp;want&nbsp;to&nbsp;use&nbsp;one&nbsp;of&nbsp;the&nbsp;other<br>
+[streaming&nbsp;APIs](https://dev.twitter.com/docs/streaming-apis),&nbsp;specify&nbsp;the&nbsp;URL<br>
+manually:<br>
+&nbsp;<br>
+-&nbsp;[Public&nbsp;streams](https://dev.twitter.com/docs/streaming-apis/streams/public):&nbsp;stream.twitter.com<br>
+-&nbsp;[User&nbsp;streams](https://dev.twitter.com/docs/streaming-apis/streams/user):&nbsp;userstream.twitter.com<br>
+-&nbsp;[Site&nbsp;streams](https://dev.twitter.com/docs/streaming-apis/streams/site):&nbsp;sitestream.twitter.com<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;you&nbsp;require&nbsp;the&nbsp;proper<br>
+[permissions](https://dev.twitter.com/docs/application-permission-model)&nbsp;to<br>
+access&nbsp;these&nbsp;streams.&nbsp;E.g.&nbsp;for&nbsp;direct&nbsp;messages&nbsp;your<br>
+[application](https://dev.twitter.com/apps)&nbsp;needs&nbsp;the&nbsp;"Read,&nbsp;Write&nbsp;&amp;&nbsp;Direct<br>
+Messages"&nbsp;permission.<br>
+&nbsp;<br>
+The&nbsp;following&nbsp;example&nbsp;demonstrates&nbsp;how&nbsp;to&nbsp;retrieve&nbsp;all&nbsp;new&nbsp;direct&nbsp;messages<br>
+from&nbsp;the&nbsp;user&nbsp;stream::<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;auth&nbsp;=&nbsp;<a href="#OAuth">OAuth</a>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;consumer_key='[your&nbsp;consumer&nbsp;key]',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;consumer_secret='[your&nbsp;consumer&nbsp;secret]',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;token='[your&nbsp;token]',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;token_secret='[your&nbsp;token&nbsp;secret]'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;twitter_userstream&nbsp;=&nbsp;<a href="#TwitterStream">TwitterStream</a>(auth=auth,&nbsp;domain='userstream.twitter.com')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;msg&nbsp;in&nbsp;twitter_userstream.user():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;'direct_message'&nbsp;in&nbsp;msg:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;msg['direct_message']['text']<br>
+&nbsp;<br>
+The&nbsp;iterator&nbsp;will&nbsp;yield&nbsp;until&nbsp;the&nbsp;TCP&nbsp;connection&nbsp;breaks.&nbsp;When&nbsp;the<br>
+connection&nbsp;breaks,&nbsp;the&nbsp;iterator&nbsp;yields&nbsp;`{'hangup':&nbsp;True}`,&nbsp;and<br>
+raises&nbsp;`StopIteration`&nbsp;if&nbsp;iterated&nbsp;again.<br>
+&nbsp;<br>
+Similarly,&nbsp;if&nbsp;the&nbsp;stream&nbsp;does&nbsp;not&nbsp;produce&nbsp;heartbeats&nbsp;for&nbsp;more&nbsp;than<br>
+90&nbsp;seconds,&nbsp;the&nbsp;iterator&nbsp;yields&nbsp;`{'hangup':&nbsp;True,<br>
+'heartbeat_timeout':&nbsp;True}`,&nbsp;and&nbsp;raises&nbsp;`StopIteration`&nbsp;if<br>
+iterated&nbsp;again.<br>
+&nbsp;<br>
+The&nbsp;`timeout`&nbsp;parameter&nbsp;controls&nbsp;the&nbsp;maximum&nbsp;time&nbsp;between<br>
+yields.&nbsp;If&nbsp;it&nbsp;is&nbsp;nonzero,&nbsp;then&nbsp;the&nbsp;iterator&nbsp;will&nbsp;yield&nbsp;either<br>
+stream&nbsp;data&nbsp;or&nbsp;`{'timeout':&nbsp;True}`&nbsp;within&nbsp;the&nbsp;timeout&nbsp;period.&nbsp;This<br>
+is&nbsp;useful&nbsp;if&nbsp;you&nbsp;want&nbsp;your&nbsp;program&nbsp;to&nbsp;do&nbsp;other&nbsp;stuff&nbsp;in&nbsp;between<br>
+waiting&nbsp;for&nbsp;tweets.<br>
+&nbsp;<br>
+The&nbsp;`block`&nbsp;parameter&nbsp;sets&nbsp;the&nbsp;stream&nbsp;to&nbsp;be&nbsp;fully&nbsp;non-blocking.&nbsp;In<br>
+this&nbsp;mode,&nbsp;the&nbsp;iterator&nbsp;always&nbsp;yields&nbsp;immediately.&nbsp;It&nbsp;returns<br>
+stream&nbsp;data,&nbsp;or&nbsp;`None`.&nbsp;Note&nbsp;that&nbsp;`timeout`&nbsp;supercedes&nbsp;this<br>
+argument,&nbsp;so&nbsp;it&nbsp;should&nbsp;also&nbsp;be&nbsp;set&nbsp;`None`&nbsp;to&nbsp;use&nbsp;this&nbsp;mode.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="twitter.stream.html#TwitterStream">TwitterStream</a></dd>
+<dd><a href="twitter.api.html#TwitterCall">twitter.api.TwitterCall</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="TwitterStream-__init__"><strong>__init__</strong></a>(self, domain<font color="#909090">=u'stream.twitter.com'</font>, secure<font color="#909090">=True</font>, auth<font color="#909090">=None</font>, api_version<font color="#909090">=u'1.1'</font>, block<font color="#909090">=True</font>, timeout<font color="#909090">=None</font>, heartbeat_timeout<font color="#909090">=90.0</font>)</dt></dl>
+
+<hr>
+Methods inherited from <a href="twitter.api.html#TwitterCall">twitter.api.TwitterCall</a>:<br>
+<dl><dt><a name="TwitterStream-__call__"><strong>__call__</strong></a>(self, **kwargs)</dt></dl>
+
+<dl><dt><a name="TwitterStream-__getattr__"><strong>__getattr__</strong></a>(self, k)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="twitter.api.html#TwitterCall">twitter.api.TwitterCall</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="UserPassAuth">class <strong>UserPassAuth</strong></a>(<a href="twitter.auth.html#Auth">Auth</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Basic&nbsp;auth&nbsp;authentication&nbsp;using&nbsp;email/username&nbsp;and<br>
+password.&nbsp;Deprecated.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="twitter.auth.html#UserPassAuth">UserPassAuth</a></dd>
+<dd><a href="twitter.auth.html#Auth">Auth</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="UserPassAuth-__init__"><strong>__init__</strong></a>(self, username, password)</dt></dl>
+
+<dl><dt><a name="UserPassAuth-encode_params"><strong>encode_params</strong></a>(self, base_url, method, params)</dt></dl>
+
+<dl><dt><a name="UserPassAuth-generate_headers"><strong>generate_headers</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="twitter.auth.html#Auth">Auth</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-oauth2_dance"><strong>oauth2_dance</strong></a>(consumer_key, consumer_secret, token_filename<font color="#909090">=None</font>)</dt><dd><tt>Perform&nbsp;the&nbsp;<a href="#OAuth2">OAuth2</a>&nbsp;dance&nbsp;to&nbsp;transform&nbsp;a&nbsp;consumer&nbsp;key&nbsp;and&nbsp;secret&nbsp;into&nbsp;a<br>
+bearer&nbsp;token.<br>
+&nbsp;<br>
+If&nbsp;a&nbsp;token_filename&nbsp;is&nbsp;given,&nbsp;the&nbsp;bearer&nbsp;token&nbsp;will&nbsp;be&nbsp;written&nbsp;to<br>
+the&nbsp;file.</tt></dd></dl>
+ <dl><dt><a name="-oauth_dance"><strong>oauth_dance</strong></a>(app_name, consumer_key, consumer_secret, token_filename<font color="#909090">=None</font>)</dt><dd><tt>Perform&nbsp;the&nbsp;<a href="#OAuth">OAuth</a>&nbsp;dance&nbsp;with&nbsp;some&nbsp;command-line&nbsp;prompts.&nbsp;Return&nbsp;the<br>
+oauth_token&nbsp;and&nbsp;oauth_token_secret.<br>
+&nbsp;<br>
+Provide&nbsp;the&nbsp;name&nbsp;of&nbsp;your&nbsp;app&nbsp;in&nbsp;`app_name`,&nbsp;your&nbsp;consumer_key,&nbsp;and<br>
+consumer_secret.&nbsp;This&nbsp;function&nbsp;will&nbsp;open&nbsp;a&nbsp;web&nbsp;browser&nbsp;to&nbsp;let&nbsp;the<br>
+user&nbsp;allow&nbsp;your&nbsp;app&nbsp;to&nbsp;access&nbsp;their&nbsp;<a href="#Twitter">Twitter</a>&nbsp;account.&nbsp;PIN<br>
+authentication&nbsp;is&nbsp;used.<br>
+&nbsp;<br>
+If&nbsp;a&nbsp;token_filename&nbsp;is&nbsp;given,&nbsp;the&nbsp;oauth&nbsp;tokens&nbsp;will&nbsp;be&nbsp;written&nbsp;to<br>
+the&nbsp;file.</tt></dd></dl>
+ <dl><dt><a name="-read_bearer_token_file"><strong>read_bearer_token_file</strong></a>(filename)</dt><dd><tt>Read&nbsp;a&nbsp;token&nbsp;file&nbsp;and&nbsp;return&nbsp;the&nbsp;oauth2&nbsp;bearer&nbsp;token.</tt></dd></dl>
+ <dl><dt><a name="-read_token_file"><strong>read_token_file</strong></a>(filename)</dt><dd><tt>Read&nbsp;a&nbsp;token&nbsp;file&nbsp;and&nbsp;return&nbsp;the&nbsp;oauth&nbsp;token&nbsp;and&nbsp;oauth&nbsp;token&nbsp;secret.</tt></dd></dl>
+ <dl><dt><a name="-write_bearer_token_file"><strong>write_bearer_token_file</strong></a>(filename, oauth2_bearer_token)</dt><dd><tt>Write&nbsp;a&nbsp;token&nbsp;file&nbsp;to&nbsp;hold&nbsp;the&nbsp;oauth2&nbsp;bearer&nbsp;token.</tt></dd></dl>
+ <dl><dt><a name="-write_token_file"><strong>write_token_file</strong></a>(filename, oauth_token, oauth_token_secret)</dt><dd><tt>Write&nbsp;a&nbsp;token&nbsp;file&nbsp;to&nbsp;hold&nbsp;the&nbsp;oauth&nbsp;token&nbsp;and&nbsp;oauth&nbsp;token&nbsp;secret.</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>__all__</strong> = ['NoAuth', 'OAuth', 'OAuth2', 'oauth2_dance', 'oauth_dance', 'read_bearer_token_file', 'read_token_file', 'Twitter', 'TwitterError', 'TwitterHTTPError', 'TwitterResponse', 'TwitterStream', 'UserPassAuth', 'write_bearer_token_file', 'write_token_file']</td></tr></table>
+</body></html>
