@@ -41,8 +41,13 @@ def main():
     WORLD_WOEID = 1
 
     indTrend = getTrending(tapi, IND_WOEID)
+    print "India Trends", indTrend
+
     worldTrend = getTrending(tapi, WORLD_WOEID)
+    print "World Trend: ", worldTrend
+
     usTrend = getTrending(tapi, US_WOEID)
+    print "US Trends", usTrend
 
     common_trend = commonTrends(indTrend, usTrend)
     print "Common Trending between India and US: "
